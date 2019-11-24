@@ -166,7 +166,7 @@ def get_podman_pods():
     # Get the list of deployed pods in local podman
     #
     
-    pods = subprocess.run([podman_cmd, 'pod', 'ps', '--format', '"{{.ID}},{{.Name}}"' ], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    pods = subprocess.run([podman_cmd, 'pod', 'ps', '--format', '{{.ID}},{{.Name}}' ], stdout=subprocess.PIPE).stdout.decode('utf-8')
     
     pod_list = []
     for l in pods.split("\n"):
@@ -176,25 +176,38 @@ def get_podman_pods():
     return pod_list
 
 
-def get_pod_yamls(repo, branch, path):
+
+
+
+def get_pod_yamls(repos):
     #
     # Get all pod yaml files with content and the filename into a list
     #    
+    
     pod_yamls = []
-    for file in os.listdir(repo+"/"+path):
-        if file.endswith(".yaml"):
-            pod = {}
-            f = os.path.join(repo+"/"+path, file)
-            pod['file'] = f
-            stream = open(f, 'r')
-            pod_yaml = yaml.load(stream, Loader=yaml.FullLoader)           
+    
+    for r in repos: 
+        try:
+            rpath = repo_dir+r["name"]+"/"+r["path"]
+            vprint("Repo and path:" , rpath)
+        except KeyError:
+            print("Name missing in repo name/path in config file")
             
-            try:
-                if pod_yaml['kind'] == 'Pod':
-                    pod['yaml'] = pod_yaml
-                    pod_yamls.append(pod)
-            except KeyError:
-                continue
+    
+        for file in os.listdir(rpath):
+            if file.endswith(".yaml"):
+                pod = {}
+                f = os.path.join(rpath, file)
+                pod['file'] = f
+                stream = open(f, 'r')
+                pod_yaml = yaml.load(stream, Loader=yaml.FullLoader)           
+                
+                try:
+                    if pod_yaml['kind'] == 'Pod':
+                        pod['yaml'] = pod_yaml
+                        pod_yamls.append(pod)
+                except KeyError:
+                    continue
             
     return pod_yamls
 
@@ -241,24 +254,19 @@ if args.apply:
     # Deploy all pod yamls regardless if repo was updated or not
     #
     
-    for r in config["repos"]: 
-        try:
-            vprint("Repo:", repo_dir+"/"+r["name"], " branch:", r["branch"], "path:", r["path"])
-        except KeyError:
-            print("Name missing in repo name, branch or path in config file")
+    pod_yamls = get_pod_yamls(config["repos"])
     
-        pod_yamls = get_pod_yamls( repo_dir+"/"+r["name"],  r["branch"],  r["path"])
-                
-        for p in pod_yamls:
-            result = subprocess.run([podman_cmd, 'play',  'kube',  p['file']], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    for p in pod_yamls:
+        vprint("Run ...", [podman_cmd, 'play',  'kube',  p['file']])
+        result = subprocess.run([podman_cmd, 'play',  'kube',  p['file']], stdout=subprocess.PIPE).stdout.decode('utf-8')
             # to-do: add error handling
-            vprint("...", result)
+        vprint("...", result)
+
             
     #
     # Remove unneeded pods: podman pod rm ID --force 
     #
-    
-    
+        
     # Get the list of deployed pods in local podman
     pod_list = get_podman_pods()
     
@@ -275,5 +283,4 @@ if args.apply:
             result = subprocess.run([podman_cmd, 'pod',  'rm',  p[0], '--force'], stdout=subprocess.PIPE).stdout.decode('utf-8')
             # to-do: add error handling
             vprint("...", result)              
-        
         
