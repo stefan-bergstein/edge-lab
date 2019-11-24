@@ -4,12 +4,23 @@ repos:
 #    path: /
 #    branch: master
 
+#  - name: dummy-pod
+#    repoURL: ssh://git@localhost:10022/stefan/dummy-pod.git
+#    path: pods
+#    branch: master
+
   - name: edge-lab
     repoURL: https://github.com/stefan-bergstein/edge-lab.git
     path: blog-django
-    branch: dev-branch
-#    branch: master
+#    branch: dev-branch
+    branch: master
+    
+  - name: edge-lab
+    repoURL: https://github.com/stefan-bergstein/edge-lab.git
+    path: blog-django
+#    branch: dev-branch
+    branch: master
 
-repoDir: repos
-baseDir: test-gitops
+#repoDir: repos
+repoDir: /home/sbergste/Projects/try-podman/python/repos/
 

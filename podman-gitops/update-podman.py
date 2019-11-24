@@ -188,7 +188,7 @@ def get_pod_yamls(repos):
     
     for r in repos: 
         try:
-            rpath = repo_dir+r["name"]+"/"+r["path"]
+            rpath = repo_dir+"/"+r["name"]+"/"+r["path"]
             vprint("Repo and path:" , rpath)
         except KeyError:
             print("Name missing in repo name/path in config file")
@@ -254,7 +254,7 @@ if args.apply:
     # Deploy all pod yamls regardless if repo was updated or not
     #
     
-    pod_yamls = get_pod_yamls(config["repos"])
+    pod_yamls = get_pod_yamls(config["/"+"repos"])
     
     for p in pod_yamls:
         vprint("Run ...", [podman_cmd, 'play',  'kube',  p['file']])
