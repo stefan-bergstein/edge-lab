@@ -1,0 +1,22 @@
+#! /bin/sh
+
+if [[ "$1" == "play" ]]
+then
+  echo "** podman-sim $*"
+fi
+
+
+if [[ "$1" == "pod" && "$2" == "ps" ]]
+then
+  echo "b79f9490f107,podman-blog"
+  echo "98a01861eea4,test"
+  echo "3b1d8a859f27,twocontainers"
+  echo "8ed8c61e9dd8,postgresql"
+fi
+
+if [[ "$1" == "pod" && "$2" == "rm" ]]
+then
+  echo "Removed Pod: $3" 
+fi
+
+

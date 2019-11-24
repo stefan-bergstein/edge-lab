@@ -1,0 +1,15 @@
+repos:
+#  - name: gitops
+#    repoURL: ssh://git@localhost:10022/stefan/gitops.git
+#    path: /
+#    branch: master
+
+  - name: edge-lab
+    repoURL: https://github.com/stefan-bergstein/edge-lab.git
+    path: blog-django
+    branch: dev-branch
+#    branch: master
+
+repoDir: repos
+baseDir: test-gitops
+
