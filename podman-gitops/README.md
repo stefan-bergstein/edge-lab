@@ -14,7 +14,7 @@ The goal of podman-gitops is to provid an example implemenation for applying Git
 
 ## Key concepts
 
-- All configurations are stored and managed in Git. The most important maniest for this use case are the K8S pod yamls.
+- All configurations are stored and managed in Git. A key maniest for this use case are the K8S pod yamls.
 - Users define pods in K8S-like manifests, which are deployed to Podman.
-- In the current, early implementation, a configuratin file per podman systems defines the pods that shoud run on the system. The configuratin file is managed in git as well.
+- In the current, early implementation, a configuratin file per podman systems defines the Git repos, which contain pod yaml manifests that are deployed on the podman systems. This configuratin file is managed in git as well.
 - Leverage Podman's pod functionality so that pods can be used for OpenShift and Podman deployments.
