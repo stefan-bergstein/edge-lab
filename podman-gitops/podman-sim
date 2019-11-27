@@ -8,11 +8,17 @@ fi
 
 if [[ "$1" == "pod" && "$2" == "ps" ]]
 then
-  echo "b79f9490f107,podman-blog"
   echo "98a01861eea4,test"
   echo "3b1d8a859f27,twocontainers"
-  echo "8ed8c61e9dd8,postgresql"
+  # echo "68d18ce990f,podman-blog"
+  echo "b6d743f98ba3,flask-app"
 fi
+
+if [[ "$1" == "pod" && "$2" == "restart" ]]
+then
+  echo "Restarted Pod: $3" 
+fi
+
 
 if [[ "$1" == "pod" && "$2" == "rm" ]]
 then

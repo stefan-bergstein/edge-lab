@@ -9,18 +9,23 @@ repos:
 #    path: pods
 #    branch: master
 
-  - name: edge-lab
+  - name: flask-app
     repoURL: https://github.com/stefan-bergstein/edge-lab.git
-    path: blog-django
-#    branch: dev-branch
-    branch: master
-    
-  - name: edge-lab
-    repoURL: https://github.com/stefan-bergstein/edge-lab.git
-    path: blog-django
-#    branch: dev-branch
+    path: flask-webservice
     branch: master
 
-#repoDir: repos
+  - name: blog-django
+    repoURL: https://github.com/stefan-bergstein/edge-lab.git
+    path: blog-django
+    branch: master
+
+# test
+#repoDir: /root/repos
+
+# dev 
 repoDir: /home/sbergste/Projects/try-podman/python/repos/
+
+
+### baseDir: test-gitops
+
 

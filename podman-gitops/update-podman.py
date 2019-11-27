@@ -50,11 +50,16 @@ if args.config_file:
 if args.check:
     # Check if
     # - config file is correct (todo)
-    # - git and podman canbe called
-    # - base directory exists
+    # - git and podman can be called
+    # - base directory exists (?)
     # - local repos and branch exists
-    print("Not implemnted yet")
-    
+    print("Sorry, --check is not implemnted yet")
+
+if args.destroy:
+    # Carefully delete all local repos
+    print("Sorry, --destroy is not implemnted yet")
+
+
 #
 # Read the config file
 #
@@ -253,33 +258,54 @@ if args.apply:
     #
     # Deploy all pod yamls regardless if repo was updated or not
     #
-    
-    pod_yamls = get_pod_yamls(config["/"+"repos"])
-    
-    for p in pod_yamls:
-        vprint("Run ...", [podman_cmd, 'play',  'kube',  p['file']])
-        result = subprocess.run([podman_cmd, 'play',  'kube',  p['file']], stdout=subprocess.PIPE).stdout.decode('utf-8')
-            # to-do: add error handling
-        vprint("...", result)
 
+    # Get the list of deployed pods in local podman
+    pod_list = get_podman_pods()
+    vprint("Pods in podman:", pod_list)
+
+    pod_yamls = get_pod_yamls(config["repos"])
+
+    for y in pod_yamls:
+        vprint("Check ...",  y["yaml"]["metadata"]["name"])
+        is_deployed = False
+        for p in pod_list:
+            if p[1] == y["yaml"]["metadata"]["name"]:
+                is_deployed = True
+        if is_deployed:
+            vprint("Restart ...", y["yaml"]["metadata"]["name"])
+            vprint("...", [podman_cmd, 'pod',  'restart',  y["yaml"]["metadata"]["name"]])
+            # Restart is eventuall not enough
+            result = subprocess.run([podman_cmd, 'pod',  'restart',  y["yaml"]["metadata"]["name"]], stdout=subprocess.PIPE).stdout.decode('utf-8')
+            # to-do: add error handling
+            vprint("...", result)             
+            
+        else:
+            vprint("Play ...", y["yaml"]["metadata"]["name"])
+            vprint("...", [podman_cmd, 'play',  'kube',  y['file']])
+            result = subprocess.run([podman_cmd, 'play',  'kube',  y['file']], stdout=subprocess.PIPE).stdout.decode('utf-8')
+            # to-do: add error handling
+            vprint("...", result)           
+            
+            
+        
+    
             
     #
     # Remove unneeded pods: podman pod rm ID --force 
     #
         
-    # Get the list of deployed pods in local podman
-    pod_list = get_podman_pods()
     
-    # print(pod_list)
+
     
-    # Find pods in podman that are not ina any pod yaml
+    # Find pods in podman that are not in any pod yaml
     for p in pod_list:
         found = False
         for y in pod_yamls:
-            vprint("Podman: " + p[1] + "  Name in yaml: " + y["yaml"]["metadata"]["name"]  )
+            # vprint("Podman: " + p[1] + "  Name in yaml: " + y["yaml"]["metadata"]["name"]  )
             if p[1] == y["yaml"]["metadata"]["name"]:
                 found = True
         if not found:
+            vprint("Remove deployed pod:", p[1])
             result = subprocess.run([podman_cmd, 'pod',  'rm',  p[0], '--force'], stdout=subprocess.PIPE).stdout.decode('utf-8')
             # to-do: add error handling
             vprint("...", result)              
