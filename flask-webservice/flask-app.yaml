@@ -1,0 +1,18 @@
+# Flask test. Container built in OCP with S2I
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: flask-app
+  labels:
+    app: flask-app
+
+spec:
+  containers:
+  - name: lask-app-container
+    image: flask-test/flask-app
+    ports:
+    - containerPort: 8080
+      hostPort: 8088
+      protocol: TCP
+    workingDir: /deploy/app
