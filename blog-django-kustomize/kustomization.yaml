@@ -1,0 +1,4 @@
+bases:
+- ../blog-django
+patches:
+- blog-django-deployment.yaml
