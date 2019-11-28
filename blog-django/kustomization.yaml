@@ -1,0 +1,3 @@
+resources:
+- blog-django-deployment.yaml
+- blog-django-svc.yaml
